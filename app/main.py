@@ -15,7 +15,7 @@ from google.adk.events.event import Event
 from google.adk.runners import Runner
 from google.adk.sessions.in_memory_session_service import InMemorySessionService
 from google.genai import types
-from jarvis.agent import root_agent
+from make_vision.agent import root_agent
 
 #
 # ADK Streaming
@@ -24,9 +24,9 @@ from jarvis.agent import root_agent
 # Load Gemini API Key
 load_dotenv()
 
-APP_NAME = "ADK Streaming example"
+APP_NAME = "Movement App"
 session_service = InMemorySessionService()
-
+init_state001 = {"user_id": "Nvc0fHCmtpgl4DfdTKfC7BewPGk1"}
 
 def start_agent_session(session_id, is_audio=False):
     """Starts an agent session"""
@@ -36,6 +36,7 @@ def start_agent_session(session_id, is_audio=False):
         app_name=APP_NAME,
         user_id=session_id,
         session_id=session_id,
+        state=init_state001,
     )
 
     # Create a Runner
