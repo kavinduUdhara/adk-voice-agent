@@ -41,7 +41,13 @@ def get_user_and_latest_vision(user_id: str) -> dict:
             LIMIT 1;
         """
         print(query)
-        result = run_query_single(query, (user_id,))
+        try:
+          result = run_query_single(query, (user_id,))
+        except Exception as e:
+           print("******************************************************")
+           print("Error fetching user and vision data: ", e)
+           return
+           
         print(f"result:  {result}")
         if not result:
             return {
@@ -49,8 +55,16 @@ def get_user_and_latest_vision(user_id: str) -> dict:
                 "message": f"No user or vision data found for user ID: {user_id}",
                 "user": None,
             }
+        print(f"cloud run results: {result}")
+        display_name = result[0] or "Unknown"
+        raw_interests = result[1]
+        vision_text = result[2] or "User hasn't made a vision yet."
 
-        display_name, interests, vision_text = result
+        if raw_interests is None or len(raw_interests) == 0:
+          interests = ["No interests yet."]
+        else:
+          interests = raw_interests
+
 
         # Fallback messages
         interests_value = interests if interests else ["No interests yet."]
@@ -68,6 +82,7 @@ def get_user_and_latest_vision(user_id: str) -> dict:
         }
 
     except Exception as e:
+        print(f"Error retrieving user and vision data: {str(e)}")
         return {
             "status": "error",
             "message": f"Error retrieving user and vision data: {str(e)}",
